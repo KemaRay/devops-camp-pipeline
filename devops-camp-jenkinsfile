@@ -20,7 +20,15 @@ pipeline {
                 dir('afs-labs-student') {
                     script {
                         env.COMMIT_HASH = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
-                        withCredentials([usernameColonPassword(credentialsId: 'wraymond-harbor-auth', variable: 'HARBOR-AUTH')]) {
+                        }
+                    }
+                }
+            }
+            stage('Application docker build') {
+            steps {
+                echo "Building application image"
+                //TODO("Lab 4 - Artifact Management"): build the docker app image
+                withCredentials([usernameColonPassword(credentialsId: 'wraymond-harbor-auth', variable: 'HARBOR-AUTH')]) {
                     script {
                         sh 'docker build -t $APP_IMAGE_NAME-$COMMIT_HASH -f ./app/Dockerfile ./afs-labs-student'
                         docker.withRegistry('https://$HARBOR_REGISTRY', 'wraymond-harbor-auth') {
@@ -29,16 +37,8 @@ pipeline {
                         }
                     }
                 }
-                    }
-                }
             }
-        }
-        stage('Application docker build') {
-            steps {
-                echo "Building application image"
-                //TODO("Lab 4 - Artifact Management"): build the docker app image
-            }
-            //TODO("Lab 4 - Artifact Management"): clean local docker app image
+            //TODO("Lab 4 - Artifact Management"): clean local docker db image
             post {
                 always {
                     echo "Clean local $APP_IMAGE_NAME image"
@@ -81,7 +81,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }    
         //TODO("Lab 7 - Automated Security Scans"): add a stage
         stage('Deploy') {
             steps {
@@ -90,10 +90,20 @@ pipeline {
             }
         }
     }
+    stage('Test'){
+            steps {
+                echo "Testing stage"
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo "Deployment stage"
+            }
+        }
+    }
     post {
         cleanup {
             echo "Clean workspace"
             sh 'rm -rf .git ./*'
         }
-    }
-}
+    }               

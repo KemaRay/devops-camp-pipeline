@@ -68,7 +68,7 @@ pipeline {
                     }
                 }
             }
-            //TODO("Lab 4 - Artifact Management"): clean local docker db image
+            
             post {
                 always {
                     echo "Clean local $DB_IMAGE_NAME image"

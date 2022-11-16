@@ -90,20 +90,4 @@ pipeline {
             }
         }
     }
-    stage('Test'){
-            steps {
-                echo "Testing stage"
-            }
-        }
-        stage('Deploy') {
-            steps {
-                echo "Deployment stage"
-            }
-        }
-    }
-    post {
-        cleanup {
-            echo "Clean workspace"
-            sh 'rm -rf .git ./*'
-        }
-    }               
+}                    
